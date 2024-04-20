@@ -11,48 +11,48 @@ class qBittorrent {
     static private var cookie = "n/a"
     static private var url = "http://0.0.0.0"
     static private var preferences: qBitPreferences?
-    
+
     static func savePreferences() {
         if(!isCookie()) { return; }
-        
+
         getPreferences(completionHandler: {
             preferences in
             self.preferences = preferences;
         })
     }
-    
+
     static func getSavedPreferences() -> qBitPreferences? {
         print(preferences?.queueing_enabled)
-        
+
         return preferences;
-        
+
     }
-    
+
     static func setURL(url: String) {
         self.url = url
     }
-    
+
     static func getURL() -> String {
         return url
     }
-    
+
     static func setCookie(cookie: String) -> Void {
         self.cookie = cookie
         savePreferences();
     }
-    
+
     static func getCookie() -> String {
         return cookie
     }
-    
+
     static func isCookie() -> Bool {
         if(cookie != "n/a") {
             return true
         }
-        
+
         return false
     }
-    
+
     static func getState(state: String) -> String {
         switch state {
         case "error":
@@ -95,9 +95,9 @@ class qBittorrent {
             return "Unknown State"
         }
     }
-    
+
     static func getStateIcon(state: String) -> String {
-        
+
         let errorIcon = "multiply.circle"
         let downloadIcon = "arrow.down.circle"
         let uploadIcon = "arrow.up.circle"
@@ -106,7 +106,7 @@ class qBittorrent {
         let metadataDownloadIcon = "info.circle"
         let movingIcon = "folder.circle"
         let queuedIcon = "clock"
-        
+
         switch state {
         case "error":
             return errorIcon
@@ -149,16 +149,16 @@ class qBittorrent {
         }
 
     }
-    
+
     static func getStateColor(state: String) -> Color {
-        
+
         let errorColor = Color.red
         let pausedColor = Color.yellow
         let seedingColor = Color.blue
         let downloadingColor = Color.green
         let checkingColor = pausedColor
         let movingColor = pausedColor
-        
+
         switch state {
         case "error":
             return errorColor
@@ -201,286 +201,286 @@ class qBittorrent {
         }
 
     }
-    
+
     static func getFormatedSize(size: Int64) -> String {
         let formater = ByteCountFormatter()
         formater.isAdaptive = true
         formater.countStyle = ByteCountFormatter.CountStyle.binary
         return formater.string(fromByteCount: size)
     }
-    
+
     static func getFormatedDate(date: Int) -> String {
         let fullDate = Date(timeIntervalSince1970: TimeInterval(date))
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy/MM/dd HH:mm"
         return formatter.string(from: fullDate)
     }
-    
+
     static func getGlobalTransferInfo(completionHandler: @escaping (GlobalTransferInfo) -> Void) {
         let request = qBitRequest.prepareURLRequest(path: "/api/v2/transfer/info")
-        
+
         qBitRequest.requestGlobalTransferInfo(request: request, completionHandler: completionHandler)
     }
-    
+
     static func getPreferences(completionHandler: @escaping (qBitPreferences) -> Void) {
         let request = qBitRequest.prepareURLRequest(path: "/api/v2/app/preferences")
-        
+
         qBitRequest.requestPreferencesJSON(request: request, completionHandler: completionHandler)
     }
-    
+
     static func getCategories(completionHandler: @escaping ([String: [String: String]]) -> Void) {
         let request = qBitRequest.prepareURLRequest(path: "/api/v2/torrents/categories")
-        
+
         qBitRequest.requestCategoriesJSON(request: request, completionHandler: completionHandler)
     }
-    
+
     static func getTags(completionHandler: @escaping ([String]) -> Void) {
         let request = qBitRequest.prepareURLRequest(path: "/api/v2/torrents/tags")
-        
+
         qBitRequest.requestTagsJSON(request: request, completionHandler: completionHandler)
     }
-    
+
     static func pauseTorrent(hash: String) {
         let path = "/api/v2/torrents/pause"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hash)])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func pauseTorrents(hashes: [String]) {
         let path = "/api/v2/torrents/pause"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|"))])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func pauseAllTorrents() {
         pauseTorrent(hash: "all")
     }
-    
+
     static func resumeTorrent(hash: String) {
         let path = "/api/v2/torrents/resume"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hash)])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func resumeTorrents(hashes: [String]) {
         let path = "/api/v2/torrents/resume"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|"))])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func resumeAllTorrents() {
         resumeTorrent(hash: "all")
     }
-    
+
     static func recheckTorrent(hash: String) {
         let path = "/api/v2/torrents/recheck"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hash)])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func recheckTorrents(hashes: [String]) {
         let path = "/api/v2/torrents/recheck"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|"))])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func reannounceTorrent(hash: String) {
         let path = "/api/v2/torrents/reannounce"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hash)])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func reannounceTorrents(hashes: [String]) {
         let path = "/api/v2/torrents/reannounce"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|"))])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func deleteTorrent(hash: String, deleteFiles: Bool) {
         let path = "/api/v2/torrents/delete"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hash), URLQueryItem(name: "deleteFiles", value: "\(deleteFiles)")])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func deleteTorrents(hashes: [String], deleteFiles: Bool) {
         let path = "/api/v2/torrents/delete"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|")), URLQueryItem(name: "deleteFiles", value: "\(deleteFiles)")])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func deleteTorrent(hash: String) {
         let path = "/api/v2/torrents/delete"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hash), URLQueryItem(name: "deleteFiles", value: "false")])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func deleteTorrents(hashes: [String]) {
         let path = "/api/v2/torrents/delete"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|")), URLQueryItem(name: "deleteFiles", value: "false")])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func increasePriorityTorrents(hashes: [String]) {
         let path = "/api/v2/torrents/increasePrio"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|"))])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func decreasePriorityTorrents(hashes: [String]) {
         let path = "/api/v2/torrents/decreasePrio"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|"))])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func topPriorityTorrents(hashes: [String]) {
         let path = "/api/v2/torrents/topPrio"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|"))])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func bottomPriorityTorrents(hashes: [String]) {
         let path = "/api/v2/torrents/bottomPrio"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|"))])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
+
     static func toggleSequentialDownload(hashes: [String]) {
         let path = "/api/v2/torrents/toggleSequentialDownload"
-        
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: [URLQueryItem(name: "hashes", value: hashes.joined(separator: "|"))])
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
-    static func addMagnetTorrent(torrent: URLQueryItem, savePath: String = "", cookie: String = "", category: String = "", tags: String = "", skipChecking: Bool = false, paused: Bool = false, sequentialDownload: Bool = false, dlLimit: Int = -1, upLimit: Int = -1, ratioLimit: Float = -1.0, seedingTimeLimit: Int = -1) {
+
+    static func addMagnetTorrent(torrent: URLQueryItem, savePath: String = "", cookie: String = "", category: String = "", tags: String = "", skipChecking: Bool = false, paused: Bool = false, sequentialDownload: Bool = true, dlLimit: Int = -1, upLimit: Int = -1, ratioLimit: Float = -1.0, seedingTimeLimit: Int = -1) {
         let path = "/api/v2/torrents/add"
-        
+
         var queryItems: [URLQueryItem] = []
-        
+
         queryItems.append(torrent)
-        
+
         if savePath != "" {
             queryItems.append(URLQueryItem(name: "savepath", value: savePath))
         }
-        
+
         if cookie != "" {
             queryItems.append(URLQueryItem(name: "cookie", value: cookie))
         }
-        
+
         if category != "" {
             queryItems.append(URLQueryItem(name: "category", value: category))
         }
-        
+
         if tags != "" {
             queryItems.append(URLQueryItem(name: "tags", value: tags))
         }
-        
+
         if skipChecking {
             queryItems.append(URLQueryItem(name: "skip_checking", value: "true"))
         }
-        
+
         if paused {
             queryItems.append(URLQueryItem(name: "paused", value: "true"))
         }
-        
+
         if dlLimit > 0 {
             queryItems.append(URLQueryItem(name: "dlLimit", value: "\(dlLimit)"))
         }
-        
+
         if upLimit > 0 {
             queryItems.append(URLQueryItem(name: "upLimit", value: "\(upLimit)"))
         }
-        
+
         if ratioLimit > 0 {
             queryItems.append(URLQueryItem(name: "ratioLimit", value: "\(ratioLimit)"))
         }
-        
+
         if seedingTimeLimit > 0 {
             queryItems.append(URLQueryItem(name: "seedingTimeLimit", value: "\(seedingTimeLimit)"))
         }
-        
+
         if sequentialDownload {
             queryItems.append(URLQueryItem(name: "sequentialDownload", value: "true"))
         }
-        
-        
+
+
         let request = qBitRequest.prepareURLRequest(path: path, queryItems: queryItems)
-        
+
         qBitRequest.requestUniversal(request: request)
     }
-    
-    static func addFileTorrent(torrents: [String: Data], savePath: String = "", cookie: String = "", category: String = "", tags: String = "", skipChecking: Bool = false, paused: Bool = false, sequentialDownload: Bool = false, dlLimit: Int = -1, upLimit: Int = -1, ratioLimit: Float = -1.0, seedingTimeLimit: Int = -1) {
+
+    static func addFileTorrent(torrents: [String: Data], savePath: String = "", cookie: String = "", category: String = "", tags: String = "", skipChecking: Bool = false, paused: Bool = false, sequentialDownload: Bool = true, dlLimit: Int = -1, upLimit: Int = -1, ratioLimit: Float = -1.0, seedingTimeLimit: Int = -1) {
         
         // Function returning torrent data ready for upload
         func createFileEntry(file: Data, fileName: String = "unknown.torrent") -> Data {
             var data = Data()
-            
+
             data.append("Content-Disposition: form-data; name=\"torrents\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
             data.append("Content-Type: application/x-bittorrent\r\n\r\n".data(using: .utf8)!)
 
             for byte in [UInt8](file) {
                 data.append(byte)
             }
-            
+
             return data
         }
-        
+
         func createSetting(name: String, value: Any) {
             data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
             data.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
             data.append("\(value)".data(using: .utf8)!)
         }
-        
+
         let path = "/api/v2/torrents/add"
         let url = URL(string: "\(qBittorrent.getURL())\(path)")
         let cookie = qBittorrent.getCookie()
-        
+
         // Setting the authentication cookie
         let jar = HTTPCookieStorage.shared
         let cookieHeaderField = ["Set-Cookie": cookie]
         let cookies = HTTPCookie.cookies(withResponseHeaderFields: cookieHeaderField, for: url!)
         jar.setCookies(cookies, for: url!, mainDocumentURL: url!) // remove force unwrap
-        
+
         var data = Data() // New data variable ready for appending of the data
-        
+
         /**
          IMPORTANT!
          When specifying boundary in http header we do not write any dashes
          When writing boundries between elements (and at the start) we write two dashes at the beggining of the boundry
          The last boundry in the request must also contain two dashes in the end in addition to two dashes at the beginning ofc
-         
+
          Cheers!
          */
         let boundary = "\(UUID().uuidString.replacing("-", with: ""))"
@@ -492,7 +492,7 @@ class qBittorrent {
 
         // Set Content-Type Header to multipart/form-data, this is equivalent to submitting form data with file upload in a web browser
         // And the boundary is also set here
-        
+
         // Torrents
         for torrent in torrents {
             data.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -504,51 +504,51 @@ class qBittorrent {
         if savePath != "" {
             createSetting(name: "savepath", value: savePath)
         }
-        
+
         if cookie != "" {
             createSetting(name: "cookie", value: cookie)
         }
-        
+
         if category != "" {
             createSetting(name: "category", value: category)
         }
-        
+
         if tags != "" {
             createSetting(name: "tags", value: tags)
         }
-        
+
         if skipChecking {
             createSetting(name: "skip_checking", value: skipChecking)
         }
-        
+
         if paused {
             createSetting(name: "paused", value: paused)
         }
-        
+
         if dlLimit > 0 {
             createSetting(name: "dlLimit", value: dlLimit)
         }
-        
+
         if upLimit > 0 {
             createSetting(name: "upLimit", value: upLimit)
         }
-        
+
         if ratioLimit > 0 {
             createSetting(name: "ratioLimit", value: ratioLimit)
         }
-        
+
         if seedingTimeLimit > 0 {
             createSetting(name: "seedingTimeLimit", value: seedingTimeLimit)
         }
-        
+
         if sequentialDownload {
             createSetting(name: "sequentialDownload", value: sequentialDownload)
         }
-        
+
         // End
         data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
-        
-        
+
+
         // Setting the headers
         urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("\(data.count)", forHTTPHeaderField: "Content-Length")
@@ -558,7 +558,7 @@ class qBittorrent {
             if let response = response {
                 print("\(response)")
             }
-            
+
             if let error = error {
                 print(error)
             }
@@ -567,30 +567,30 @@ class qBittorrent {
 
     /**
      @Binding var urls: String
-     
+
      @State private var savePath = ""
      @State private var defaultSavePath = ""
-     
+
      @State private var cookie = ""
      @State private var category = ""
      @State private var tags = ""
-     
+
      @State private var skipChecking = false
      @State private var paused = false
-     
+
      @State private var showAdvanced = false
-     
+
      @State private var showLimits = false
      @State private var DLlimit = ""
      @State private var UPlimit = ""
      @State private var ratioLimit = ""
      @State private var seedingTimeLimit = ""
-     
+
      @State private var categoriesArr = ["None"]
      @State private var categoriesPaths = ["None": ""]
      @State private var tagsArr: [String] = ["None"]
      */
-    
+
     /*
      error
      missingFiles
@@ -614,9 +614,9 @@ class qBittorrent {
     /*func getTorrents() -> [[String:Any]] {
         let request = qBitRequest.prepareURLRequest(path: "/api/v2/torrents/info")
         var torrentsArray: [[String:Any]]
-        
+
         qBitRequest.requestJSON(request: request, completionHandler: {array in torrentsArray = array})
-        
+
         return torrentsArray
     }*/
 }
